@@ -2,6 +2,6 @@ name: bit_set
 version: 0.1.0
 author: Andrew Skalkin <skalkin@gmail.com>
 description: Efficient implementation of a bitset.
-homepage: https://github.com/
+homepage: https://github.com/skalkin/bit_set
 dev_dependencies:
   unittest: any

@@ -4,6 +4,7 @@ import 'dart:core';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:async';
+import 'dart:collection';
 
 class BitSet {
   final int SHRINK_THRESHOLD = 0x100;
@@ -339,12 +340,10 @@ class BitSet {
     return this;
   }
 
-  /*
-  operator & (BitSet second) => clone().and(second)..self;
-  operator % (BitSet second) => clone().AndNot(second)..self;
-  operator | (BitSet second) => clone().or(second)..self;
-  operator ^ (BitSet second) => clone().xor(second)..self;
-  */
+  operator & (BitSet second) => clone().and(second);
+  operator % (BitSet second) => clone().andNot(second);
+  operator | (BitSet second) => clone().or(second);
+  operator ^ (BitSet second) => clone().xor(second);
 
   /// Inserts n 0-bits at position pos, resizing self and shifting bits appropriately.
   void insertAt(int pos, int n, [bool flag=false])
@@ -417,37 +416,12 @@ class BitSet {
      return (value ? _selectedCount : length - _selectedCount);
   }
 
-  /// Enumerates indices of bits of the specified value in bitset.
-  /*
-  private IEnumerator<int> GetIndices(bool value, int startAfter = -1)
-  {
-     int num1 = lengthInInts;
-     int num2 = startAfter / 32;
-     if (num2 < 0) num2 = 0;
-     for (int i = num2; i < num1; i++)
-     {
-        var k = (uint)(value ? data[i] : ~data[i]);
-        for (int j = 0; k != 0; j++, k >>= 8)
-        {
-           uint m = k & 0xff;
-           int ofs = (i * 32) + (j * 8);
-           for (int p; (p = FirstOnBit[m]) >= 0; )
-           {
-              int index = p + ofs;
-              if (index >= length) yield break;
-              if (index > startAfter) yield return index;
-              m >>= p + 1;
-              ofs += p + 1;
-           }
-        }
-     }
-  }
-  */
-
   void clear() => setLength(0);
+
   bool contains(bool value) => findNext(-1, value) >= 0;
 
-  /// Finds next bit of the specified value in the bitset.
+  /// Returns the position of the next bit of the specified value, starting from the specified position.
+  /// Returns -1, if there are no such bits.
   int findNext(int index, bool value) {
     assureInRange(index, -1, length, "index");
     
@@ -501,47 +475,7 @@ class BitSet {
     return -1;
   }
 
-  /*
-  Iterable<int> GetSelectedIndices()
-  {
-     for (int i = -1, j = 0; (i = FindNext(i, true)) >= 0; j++)
-        yield return i;
-  }
-  
-  IEnumerable<int> GetIndices(bool value)
-  {
-     for (int i = -1, j = 0; (i = FindNext(i, value)) >= 0; j++)
-        yield return i;
-  }
-
-  IEnumerator<bool> IEnumerable<bool>.GetEnumerator()
-  {
-     for (int i = 0; i < length; i++)
-     {
-        yield return this[i];
-     }
-  }
-  
-  private static IEnumerable<Tuple<int, int>> GetContiguousBlocksReverse(IList<int> sortedIndices)
-  {
-     if (sortedIndices.Count == 0) yield break;
-     int prev = sortedIndices[sortedIndices.Count - 1];
-     int beg = prev;
-     for (int i = sortedIndices.Count - 2; i >= 0; i--)
-     {
-        int current = sortedIndices[i];
-        if (prev - current <= 1)
-        {
-           prev = current;
-           continue;
-        }
-        yield return new Tuple<int, int>(beg, prev);
-        beg = prev = current;
-     }
-     yield return new Tuple<int, int>(beg, prev);
-  }  
-  
-  */
+  Iterable<int> indices([bool flag = true, int startAfter = -1]) => new _BitSetIterable(this, flag);
 
   int beginUpdate() => _updateLevel++;
 
@@ -550,4 +484,26 @@ class BitSet {
      if (--_updateLevel == 0 && changed != null)
         _changeController.add(-77);
   }
+}
+
+class _BitSetIterable extends Object with IterableMixin<int>{
+  int _index = -1;
+  bool _flag;
+  BitSet _bitset;
+
+  _BitSetIterable(this._bitset, this._flag);
+  
+  Iterator<int> get iterator => new _BitSetIndexIterator(_bitset, _flag);
+}
+
+class _BitSetIndexIterator implements Iterator<int> {
+  int _index = -1;
+  bool _flag;
+  BitSet _bitset;
+
+  _BitSetIndexIterator(this._bitset, this._flag);
+
+  bool moveNext() => (_index = _bitset.findNext(_index, _flag)) != -1;
+
+  int get current => _index;
 }

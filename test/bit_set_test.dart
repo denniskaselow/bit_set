@@ -82,7 +82,11 @@ void main() {
     b[1] = false;
     expect(b.version == 1, true);
   });
-  
+
+  test("indices", () {
+    expect(oioi.indices(true).toList(), [1, 3]);
+  });
+
   test("usage", () {
     var bitset = new BitSet.fromString("01010");
     var length = bitset.length;  // 5
@@ -90,7 +94,7 @@ void main() {
     var bit = bitset[2];  // true
     var count = bitset.countBits(true);  // 4
     var xor = bitset.clone().xor(bitset);
-    count = bitset.countBits(true);  // 0
+    var setIndices = bitset.indices(true).toList();  // [1,2,3,5]
+    count = xor.countBits(true);  // 0
   });
-  
 }
