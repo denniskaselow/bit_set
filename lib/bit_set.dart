@@ -11,8 +11,8 @@ class BitSet {
   Uint32List _data;
   
   int _length;
-  int _version;
-  int _updateLevel;
+  int _version = 0;
+  int _updateLevel = 0;
   int _selectedCount;
   int _selectedCountVersion = -1;
   
@@ -120,7 +120,7 @@ class BitSet {
     7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]);
 
   /// Creates a new bitset of a specified length
-  BitSet(int length, bool defaultValue) {
+  BitSet(int length, [bool defaultValue=false]) {
      _data = new Uint32List((length + 0x1f) ~/ 0x20);
      _length = length;
      _version = 0;
