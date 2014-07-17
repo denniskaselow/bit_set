@@ -42,6 +42,10 @@ void main() {
     expect(oioi.findNext(3, false), -1);
     expect((new BitSet(35, false)..[33]=true).findNext(3, true), 33);
   });
+
+  test("findPrev", () {
+    expect((new BitSet(5096, true)).findPrev(5096, true), 5095);
+  });
   
   test("fromString", () {
     expect(bs("0101").toBinaryString(), "0101");

@@ -461,9 +461,9 @@ class BitSet {
     int remainingBits = (index + 1) & 0x1f;
 
     for (int i = lastIntIdx; i >= 0; i--) {
-      var k = (value ? _data[i] : ~_data[i]);  // cast
+      int k = (value ? _data[i] : ~_data[i]);  // cast
       if (remainingBits != 0) {
-        k &= ~((~4294967295) << remainingBits);
+        k &= ~((4294967295) << remainingBits);
         remainingBits = 0;
       }
       for (int j = 24; k != 0; j -= 8, k <<= 8) {
