@@ -1,5 +1,5 @@
 name: bit_set
-version: 0.1.0
+version: 0.2.0-dev
 author: Andrew Skalkin <skalkin@gmail.com>
 description: Efficient implementation of a bitset.
 homepage: https://github.com/skalkin/bit_set

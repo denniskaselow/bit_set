@@ -129,6 +129,8 @@ class BitSet {
        for (int i = 0; i < _data.length; i++)
           _data[i] = -1;
   }
+
+  BitSet._internal(this._data, this._length) : _version = 0;
  
   /// Clones a bitset.
   BitSet clone() {
@@ -140,14 +142,14 @@ class BitSet {
   }
 
   factory BitSet.fromValues(List<bool> values) {
-    _data = new Uint32List((values.length + 0x1f) ~/ 0x20);
-    _length = values.length;
+    var _data = new Uint32List((values.length + 0x1f) ~/ 0x20);
+    var _length = values.length;
     
     for (int i = 0; i < _length; i++)
       if (values[i])
         _data[i ~/ 0x20] |= 1 << ((i % 0x20) & 0x1f);
     
-    _version = 0;
+    return new BitSet._internal(_data, _length);
   }
 
   factory BitSet.fromString(String values) {
@@ -164,8 +166,8 @@ class BitSet {
   
   factory BitSet.fromBytes(ByteData bytes) {
      int len = bytes.lengthInBytes; 
-     _data = new Uint32List((len + 3) ~/ 4);
-     _length = len * 8;
+     var _data = new Uint32List((len + 3) ~/ 4);
+     var _length = len * 8;
      int num1 = 0;
      int num2 = 0;
      
@@ -188,7 +190,7 @@ class BitSet {
      if (len - num2 == 1) 
         _data[num1] |= bytes.getInt8(num2) & 0xff;
 
-     _version = 0;
+     return new BitSet._internal(_data, _length);
   }
 
   String toString() => "$_length bits, ${countBits(true)} set";
