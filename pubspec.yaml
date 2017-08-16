@@ -4,4 +4,4 @@ author: Andrew Skalkin <skalkin@gmail.com>
 description: Efficient implementation of a bitset.
 homepage: https://github.com/skalkin/bit_set
 dev_dependencies:
-  unittest: any
+  test: any
