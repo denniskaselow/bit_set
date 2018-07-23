@@ -1,6 +1,7 @@
 .idea
 pubspec.lock
 packages
+.packages
 
 #################
 ## Eclipse
